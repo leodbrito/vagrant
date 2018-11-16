@@ -1,0 +1,38 @@
+# Vagrantfile CentOS
+
+# -*- mode: ruby -*-
+
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+
+	#servidores para o labotorio do Vagrant
+	config.vm.define :ubuntu do |config|
+		config.vm.hostname = "ubuntu.myproject.local"
+		config.vm.provider "virtualbox"
+		config.vm.box = "ubuntu/xenial64"
+		#config.vm.box_url = ""
+		#config.vm.network "private_network", ip:"192.168.2.13", virtualbox__intnet: "InernalNetwork"
+		config.vm.network "forwarded_port", guest: 8080, host: 8080
+		config.vm.network "forwarded_port", guest: 3306, host: 3306
+		config.vm.network "forwarded_port", guest: 8888, host: 8888
+		config.disksize.size = '10GB'
+		#config.vm.synced_folder ".", "/vagrant", disabled: true
+		config.vm.synced_folder ".", "/vagrant"
+		config.vm.provision "shell", inline: <<-SHELL
+			apt-get install -y net-tools
+			apt-get install -y netcat
+			apt-get install -y nmap
+			apt-get install -y telnet
+			apt-get install -y vim
+			apt-get install -y git
+			apt-get install -y glances
+		SHELL
+		
+		config.vm.provider "virtualbox" do |vb|
+			vb.name = "Ubuntu1604"
+			vb.cpus = "1"
+			vb.memory = "4096"
+		end
+	end
+end
